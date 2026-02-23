@@ -1,0 +1,27 @@
+# Dockerfile for ConvoContentBuddy.API.Brain
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+USER app
+WORKDIR /app
+EXPOSE 8080
+EXPOSE 8081
+
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+COPY ["src/ConvoContentBuddy.API.Brain/ConvoContentBuddy.API.Brain/ConvoContentBuddy.API.Brain.csproj", "ConvoContentBuddy.API.Brain/"]
+COPY ["src/ConvoContentBuddy.ServiceDefaults/ConvoContentBuddy.ServiceDefaults/ConvoContentBuddy.ServiceDefaults.csproj", "ConvoContentBuddy.ServiceDefaults/"]
+COPY ["src/ConvoContentBuddy.Shared/ConvoContentBuddy.Shared/ConvoContentBuddy.Shared.csproj", "ConvoContentBuddy.Shared/"]
+RUN dotnet restore "ConvoContentBuddy.API.Brain/ConvoContentBuddy.API.Brain.csproj"
+
+COPY . .
+WORKDIR "/src/ConvoContentBuddy.API.Brain"
+RUN dotnet build "ConvoContentBuddy.API.Brain.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "ConvoContentBuddy.API.Brain.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "ConvoContentBuddy.API.Brain.dll"]

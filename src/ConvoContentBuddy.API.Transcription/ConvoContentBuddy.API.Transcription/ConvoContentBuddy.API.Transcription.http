@@ -1,0 +1,6 @@
+@ConvoContentBuddy.API.Transcription_HostAddress = http://localhost:5161
+
+GET {{ConvoContentBuddy.API.Transcription_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

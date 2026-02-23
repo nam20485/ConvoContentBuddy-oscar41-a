@@ -1,92 +1,226 @@
-# Docker Compose configuration for AI Workflow Agents
-# Optional convenience wrapper for local development
-# For production, use docker run commands directly (see docker/README.md)
-
 version: '3.8'
 
 services:
-  workflow-agent:
+  # Database Services
+  qdrant:
+    image: qdrant/qdrant:v1.9.0
+    container_name: qdrant
+    ports:
+      - "6333:6333"  # HTTP API
+      - "6334:6334"  # gRPC API
+    volumes:
+      - qdrant_data:/qdrant/storage
+    environment:
+      - QDRANT__SERVICE__HTTP_PORT=6333
+      - QDRANT__SERVICE__GRPC_PORT=6334
+    networks:
+      - convo-network
+
+  postgres:
+    image: pgvector/pgvector:pg15
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    environment:
+      - POSTGRES_DB=convobuddy
+      - POSTGRES_USER=convobuddy
+      - POSTGRES_PASSWORD=convobuddy123
+    networks:
+      - convo-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - convo-network
+
+  # Application Services
+  apphost:
     build:
       context: ..
-      dockerfile: docker/Dockerfile
-    image: workflow-agent:latest
-    container_name: workflow-agent
-    
-    # Environment configuration
-    # Option 1: Load from .env file
-    env_file:
-      - .env
-    
-    # Option 2: Inline environment variables
+      dockerfile: docker/Dockerfile.AppHost
+    container_name: apphost
+    ports:
+      - "8001:8080"
+      - "8002:8081"
     environment:
-      # Workflow configuration
-      - WORKFLOW_NAME=${WORKFLOW_NAME:-project-setup-upgraded}
-      - WORKFLOW_CLIENT=${WORKFLOW_CLIENT:-claude}
-      
-      # Authentication (use .env file or secrets instead)
-      # - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
-      # - OPENAI_API_KEY=${OPENAI_API_KEY}
-      
-      # Optional settings
-      - LOG_FORMAT=${LOG_FORMAT:-json}
-      - DEBUG=${DEBUG:-false}
-      - EXTRA_PROMPT_ARGS=${EXTRA_PROMPT_ARGS:-}
-    
-    # Secrets (recommended for sensitive data)
-    secrets:
-      - anthropic_api_key
-      # - openai_api_key  # Uncomment if using OpenCode
-    
-    # Workspace mount (read-only by default for safety)
-    volumes:
-      - ..:/workspace:ro
-      # For local development with write access, use:
-      # - ..:/workspace:rw
-      
-      # Optional: Mount pre-authenticated configs
-      # - ~/.config/anthropic:/home/vscode/.config/anthropic:ro
-      # - ~/.config/opencode:/home/vscode/.config/opencode:ro
-    
-    # Network configuration
-    # network_mode: bridge  # Default
-    
-    # Resource limits (optional)
-    # deploy:
-    #   resources:
-    #     limits:
-    #       cpus: '2'
-    #       memory: 4G
-    #     reservations:
-    #       cpus: '1'
-    #       memory: 2G
-    
-    # Restart policy
-    restart: "no"  # Don't restart - one-shot execution
-    
-    # Working directory
-    working_dir: /workspace
-    
-    # User (matches base image)
-    user: vscode
-    
-    # Stdin/TTY (useful for debugging)
-    stdin_open: false
-    tty: false
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+    depends_on:
+      - qdrant
+      - postgres
+      - redis
+    networks:
+      - convo-network
 
-# Docker secrets configuration
-# Create secrets with: echo "sk-ant-your-key" | docker secret create anthropic_api_key -
-secrets:
-  anthropic_api_key:
-    external: true
-  # openai_api_key:
-  #   external: true
+  api-brain:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.API.Brain
+    container_name: api-brain-1
+    ports:
+      - "8003:8080"
+      - "8004:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__Qdrant=http://qdrant:6333
+      - ConnectionStrings__Postgres=Host=postgres;Database=convobuddy;Username=convobuddy;Password=convobuddy123
+      - ConnectionStrings__Redis=redis:6379
+    depends_on:
+      - qdrant
+      - postgres
+      - redis
+    networks:
+      - convo-network
 
-# Volumes (if needed for persistent state)
-# volumes:
-#   workflow-outputs:
-#     driver: local
+  api-brain-2:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.API.Brain
+    container_name: api-brain-2
+    ports:
+      - "8005:8080"
+      - "8006:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__Qdrant=http://qdrant:6333
+      - ConnectionStrings__Postgres=Host=postgres;Database=convobuddy;Username=convobuddy;Password=convobuddy123
+      - ConnectionStrings__Redis=redis:6379
+    depends_on:
+      - qdrant
+      - postgres
+      - redis
+    networks:
+      - convo-network
 
-# Networks (if custom networking needed)
-# networks:
-#   workflow-net:
-#     driver: bridge
+  api-brain-3:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.API.Brain
+    container_name: api-brain-3
+    ports:
+      - "8007:8080"
+      - "8008:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__Qdrant=http://qdrant:6333
+      - ConnectionStrings__Postgres=Host=postgres;Database=convobuddy;Username=convobuddy;Password=convobuddy123
+      - ConnectionStrings__Redis=redis:6379
+    depends_on:
+      - qdrant
+      - postgres
+      - redis
+    networks:
+      - convo-network
+
+  api-transcription:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.API.Transcription
+    container_name: api-transcription
+    ports:
+      - "8009:8080"
+      - "8010:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__Postgres=Host=postgres;Database=convobuddy;Username=convobuddy;Password=convobuddy123
+      - ConnectionStrings__Redis=redis:6379
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - convo-network
+
+  api-vectorsearch:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.API.VectorSearch
+    container_name: api-vectorsearch
+    ports:
+      - "8011:8080"
+      - "8012:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__Qdrant=http://qdrant:6333
+      - ConnectionStrings__Postgres=Host=postgres;Database=convobuddy;Username=convobuddy;Password=convobuddy123
+    depends_on:
+      - qdrant
+      - postgres
+    networks:
+      - convo-network
+
+  api-gateway:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.API.Gateway
+    container_name: api-gateway
+    ports:
+      - "8013:8080"
+      - "8014:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - Services__Brain__Instances__0=http://api-brain-1:8080
+      - Services__Brain__Instances__1=http://api-brain-2:8080
+      - Services__Brain__Instances__2=http://api-brain-3:8080
+      - Services__Transcription=http://api-transcription:8080
+      - Services__VectorSearch=http://api-vectorsearch:8080
+    depends_on:
+      - api-brain
+      - api-transcription
+      - api-vectorsearch
+    networks:
+      - convo-network
+
+  ui-web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.UI.Web
+    container_name: ui-web
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ApiBaseUrl=http://api-gateway:8080
+    depends_on:
+      - api-gateway
+    networks:
+      - convo-network
+
+  data-seeder:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.Data.Seeder
+    container_name: data-seeder
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__Qdrant=http://qdrant:6333
+      - ConnectionStrings__Postgres=Host=postgres;Database=convobuddy;Username=convobuddy;Password=convobuddy123
+    depends_on:
+      - qdrant
+      - postgres
+    networks:
+      - convo-network
+    profiles:
+      - tools
+
+volumes:
+  qdrant_data:
+  postgres_data:
+  redis_data:
+
+networks:
+  convo-network:
+    driver: bridge
