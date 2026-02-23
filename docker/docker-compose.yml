@@ -23,7 +23,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     environment:
       - POSTGRES_DB=convobuddy
       - POSTGRES_USER=convobuddy
@@ -190,10 +190,7 @@ services:
       dockerfile: docker/Dockerfile.UI.Web
     container_name: ui-web
     ports:
-      - "5000:8080"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ApiBaseUrl=http://api-gateway:8080
+      - "5000:80"
     depends_on:
       - api-gateway
     networks:

@@ -8,12 +8,12 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["src/ConvoContentBuddy.AppHost/ConvoContentBuddy.AppHost/ConvoContentBuddy.AppHost.csproj", "ConvoContentBuddy.AppHost/"]
-COPY ["src/ConvoContentBuddy.ServiceDefaults/ConvoContentBuddy.ServiceDefaults/ConvoContentBuddy.ServiceDefaults.csproj", "ConvoContentBuddy.ServiceDefaults/"]
-RUN dotnet restore "ConvoContentBuddy.AppHost/ConvoContentBuddy.AppHost.csproj"
+COPY ["src/ConvoContentBuddy.AppHost/ConvoContentBuddy.AppHost/ConvoContentBuddy.AppHost.csproj", "src/ConvoContentBuddy.AppHost/ConvoContentBuddy.AppHost/"]
+COPY ["src/ConvoContentBuddy.ServiceDefaults/ConvoContentBuddy.ServiceDefaults/ConvoContentBuddy.ServiceDefaults.csproj", "src/ConvoContentBuddy.ServiceDefaults/ConvoContentBuddy.ServiceDefaults/"]
+RUN dotnet restore "src/ConvoContentBuddy.AppHost/ConvoContentBuddy.AppHost/ConvoContentBuddy.AppHost.csproj"
 
 COPY . .
-WORKDIR "/src/ConvoContentBuddy.AppHost"
+WORKDIR "/src/src/ConvoContentBuddy.AppHost/ConvoContentBuddy.AppHost"
 RUN dotnet build "ConvoContentBuddy.AppHost.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish

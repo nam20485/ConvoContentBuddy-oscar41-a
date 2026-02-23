@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS problems (
     difficulty VARCHAR(50) CHECK (difficulty IN ('Easy', 'Medium', 'Hard')),
     category VARCHAR(100),
     tags TEXT[],
-    leetcode_id INTEGER,
+    leetcode_id INTEGER UNIQUE,
     url VARCHAR(1000),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP

@@ -1,24 +1,19 @@
 # Dockerfile for ConvoContentBuddy.UI.Web (Blazor WebAssembly)
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
-WORKDIR /app
-EXPOSE 8080
-
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["src/ConvoContentBuddy.UI.Web/ConvoContentBuddy.UI.Web/ConvoContentBuddy.UI.Web.csproj", "ConvoContentBuddy.UI.Web/"]
-COPY ["src/ConvoContentBuddy.Shared/ConvoContentBuddy.Shared/ConvoContentBuddy.Shared.csproj", "ConvoContentBuddy.Shared/"]
-RUN dotnet restore "ConvoContentBuddy.UI.Web/ConvoContentBuddy.UI.Web.csproj"
+COPY ["src/ConvoContentBuddy.UI.Web/ConvoContentBuddy.UI.Web/ConvoContentBuddy.UI.Web.csproj", "src/ConvoContentBuddy.UI.Web/ConvoContentBuddy.UI.Web/"]
+COPY ["src/ConvoContentBuddy.Shared/ConvoContentBuddy.Shared/ConvoContentBuddy.Shared.csproj", "src/ConvoContentBuddy.Shared/ConvoContentBuddy.Shared/"]
+RUN dotnet restore "src/ConvoContentBuddy.UI.Web/ConvoContentBuddy.UI.Web/ConvoContentBuddy.UI.Web.csproj"
 
 COPY . .
-WORKDIR "/src/ConvoContentBuddy.UI.Web"
+WORKDIR "/src/src/ConvoContentBuddy.UI.Web/ConvoContentBuddy.UI.Web"
 RUN dotnet build "ConvoContentBuddy.UI.Web.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "ConvoContentBuddy.UI.Web.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "ConvoContentBuddy.UI.Web.dll"]
+FROM nginx:1.27-alpine AS final
+EXPOSE 80
+COPY --from=publish /app/publish/wwwroot /usr/share/nginx/html

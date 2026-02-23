@@ -8,13 +8,13 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["src/ConvoContentBuddy.API.VectorSearch/ConvoContentBuddy.API.VectorSearch/ConvoContentBuddy.API.VectorSearch.csproj", "ConvoContentBuddy.API.VectorSearch/"]
-COPY ["src/ConvoContentBuddy.ServiceDefaults/ConvoContentBuddy.ServiceDefaults/ConvoContentBuddy.ServiceDefaults.csproj", "ConvoContentBuddy.ServiceDefaults/"]
-COPY ["src/ConvoContentBuddy.Shared/ConvoContentBuddy.Shared/ConvoContentBuddy.Shared.csproj", "ConvoContentBuddy.Shared/"]
-RUN dotnet restore "ConvoContentBuddy.API.VectorSearch/ConvoContentBuddy.API.VectorSearch.csproj"
+COPY ["src/ConvoContentBuddy.API.VectorSearch/ConvoContentBuddy.API.VectorSearch/ConvoContentBuddy.API.VectorSearch.csproj", "src/ConvoContentBuddy.API.VectorSearch/ConvoContentBuddy.API.VectorSearch/"]
+COPY ["src/ConvoContentBuddy.ServiceDefaults/ConvoContentBuddy.ServiceDefaults/ConvoContentBuddy.ServiceDefaults.csproj", "src/ConvoContentBuddy.ServiceDefaults/ConvoContentBuddy.ServiceDefaults/"]
+COPY ["src/ConvoContentBuddy.Shared/ConvoContentBuddy.Shared/ConvoContentBuddy.Shared.csproj", "src/ConvoContentBuddy.Shared/ConvoContentBuddy.Shared/"]
+RUN dotnet restore "src/ConvoContentBuddy.API.VectorSearch/ConvoContentBuddy.API.VectorSearch/ConvoContentBuddy.API.VectorSearch.csproj"
 
 COPY . .
-WORKDIR "/src/ConvoContentBuddy.API.VectorSearch"
+WORKDIR "/src/src/ConvoContentBuddy.API.VectorSearch/ConvoContentBuddy.API.VectorSearch"
 RUN dotnet build "ConvoContentBuddy.API.VectorSearch.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
