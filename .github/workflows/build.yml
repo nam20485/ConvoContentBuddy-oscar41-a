@@ -60,7 +60,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@v5
       with:
-        images: convobuddy
+        images: ${{ secrets.DOCKER_USERNAME }}/convobuddy
         tags: |
           type=ref,event=branch
           type=ref,event=pr
