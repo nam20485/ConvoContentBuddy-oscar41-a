@@ -20,4 +20,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="../../../src/ConvoContentBuddy.API.Brain/ConvoContentBuddy.API.Brain/ConvoContentBuddy.API.Brain.csproj" />
+  </ItemGroup>
+
 </Project>
