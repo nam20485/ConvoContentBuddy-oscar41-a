@@ -10,4 +10,13 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="../../ConvoContentBuddy.API.Brain/ConvoContentBuddy.API.Brain/ConvoContentBuddy.API.Brain.csproj" />
+    <ProjectReference Include="../../ConvoContentBuddy.API.Gateway/ConvoContentBuddy.API.Gateway/ConvoContentBuddy.API.Gateway.csproj" />
+    <ProjectReference Include="../../ConvoContentBuddy.API.Transcription/ConvoContentBuddy.API.Transcription/ConvoContentBuddy.API.Transcription.csproj" />
+    <ProjectReference Include="../../ConvoContentBuddy.API.VectorSearch/ConvoContentBuddy.API.VectorSearch/ConvoContentBuddy.API.VectorSearch.csproj" />
+    <ProjectReference Include="../../ConvoContentBuddy.Data.Seeder/ConvoContentBuddy.Data.Seeder/ConvoContentBuddy.Data.Seeder.csproj" />
+    <ProjectReference Include="../../ConvoContentBuddy.UI.Web/ConvoContentBuddy.UI.Web/ConvoContentBuddy.UI.Web.csproj" />
+  </ItemGroup>
+
 </Project>
