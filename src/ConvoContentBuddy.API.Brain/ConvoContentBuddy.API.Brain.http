@@ -1,0 +1,6 @@
+@ConvoContentBuddy.API.Brain_HostAddress = http://localhost:5225
+
+GET {{ConvoContentBuddy.API.Brain_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
