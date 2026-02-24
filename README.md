@@ -57,7 +57,7 @@ ConvoContentBuddy employs a 4-layer architecture designed for high availability,
 3. **Start the development environment**
    ```bash
    # Option 1: Using .NET Aspire (recommended)
-   dotnet run --project src/ConvoContentBuddy.AppHost
+   dotnet run --project src/ConvoContentBuddy.AppHost/ConvoContentBuddy.AppHost.csproj
 
    # Option 2: Using Docker Compose
    docker-compose -f docker/docker-compose.yml up -d
