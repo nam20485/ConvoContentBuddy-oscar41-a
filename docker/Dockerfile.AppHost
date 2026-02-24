@@ -9,9 +9,9 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY src/ ./
-RUN dotnet restore "ConvoContentBuddy.AppHost/ConvoContentBuddy.AppHost/ConvoContentBuddy.AppHost.csproj"
+RUN dotnet restore "ConvoContentBuddy.AppHost/ConvoContentBuddy.AppHost.csproj"
 
-WORKDIR "/src/ConvoContentBuddy.AppHost/ConvoContentBuddy.AppHost"
+WORKDIR "/src/ConvoContentBuddy.AppHost"
 RUN dotnet build "ConvoContentBuddy.AppHost.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish

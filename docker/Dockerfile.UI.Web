@@ -3,9 +3,9 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY src/ ./
-RUN dotnet restore "ConvoContentBuddy.UI.Web/ConvoContentBuddy.UI.Web/ConvoContentBuddy.UI.Web.csproj"
+RUN dotnet restore "ConvoContentBuddy.UI.Web/ConvoContentBuddy.UI.Web.csproj"
 
-WORKDIR "/src/ConvoContentBuddy.UI.Web/ConvoContentBuddy.UI.Web"
+WORKDIR "/src/ConvoContentBuddy.UI.Web"
 RUN dotnet build "ConvoContentBuddy.UI.Web.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish

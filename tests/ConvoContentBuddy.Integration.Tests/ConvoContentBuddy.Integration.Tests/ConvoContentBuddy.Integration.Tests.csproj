@@ -21,12 +21,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../../src/ConvoContentBuddy.API.Brain/ConvoContentBuddy.API.Brain/ConvoContentBuddy.API.Brain.csproj" />
-    <ProjectReference Include="../../../src/ConvoContentBuddy.API.Gateway/ConvoContentBuddy.API.Gateway/ConvoContentBuddy.API.Gateway.csproj" />
-    <ProjectReference Include="../../../src/ConvoContentBuddy.API.Transcription/ConvoContentBuddy.API.Transcription/ConvoContentBuddy.API.Transcription.csproj" />
-    <ProjectReference Include="../../../src/ConvoContentBuddy.API.VectorSearch/ConvoContentBuddy.API.VectorSearch/ConvoContentBuddy.API.VectorSearch.csproj" />
-    <ProjectReference Include="../../../src/ConvoContentBuddy.Data.Seeder/ConvoContentBuddy.Data.Seeder/ConvoContentBuddy.Data.Seeder.csproj" />
-    <ProjectReference Include="../../../src/ConvoContentBuddy.UI.Web/ConvoContentBuddy.UI.Web/ConvoContentBuddy.UI.Web.csproj" />
+    <ProjectReference Include="../../../src/ConvoContentBuddy.API.Brain/ConvoContentBuddy.API.Brain.csproj" />
+    <ProjectReference Include="../../../src/ConvoContentBuddy.API.Gateway/ConvoContentBuddy.API.Gateway.csproj" />
+    <ProjectReference Include="../../../src/ConvoContentBuddy.API.Transcription/ConvoContentBuddy.API.Transcription.csproj" />
+    <ProjectReference Include="../../../src/ConvoContentBuddy.API.VectorSearch/ConvoContentBuddy.API.VectorSearch.csproj" />
+    <ProjectReference Include="../../../src/ConvoContentBuddy.Data.Seeder/ConvoContentBuddy.Data.Seeder.csproj" />
+    <ProjectReference Include="../../../src/ConvoContentBuddy.UI.Web/ConvoContentBuddy.UI.Web.csproj" />
   </ItemGroup>
 
 </Project>

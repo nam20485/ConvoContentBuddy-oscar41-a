@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../../src/ConvoContentBuddy.UI.Web/ConvoContentBuddy.UI.Web/ConvoContentBuddy.UI.Web.csproj" />
+    <ProjectReference Include="../../../src/ConvoContentBuddy.UI.Web/ConvoContentBuddy.UI.Web.csproj" />
   </ItemGroup>
 
 </Project>

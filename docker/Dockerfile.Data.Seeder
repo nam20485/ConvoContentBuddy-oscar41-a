@@ -6,9 +6,9 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY src/ ./
-RUN dotnet restore "ConvoContentBuddy.Data.Seeder/ConvoContentBuddy.Data.Seeder/ConvoContentBuddy.Data.Seeder.csproj"
+RUN dotnet restore "ConvoContentBuddy.Data.Seeder/ConvoContentBuddy.Data.Seeder.csproj"
 
-WORKDIR "/src/ConvoContentBuddy.Data.Seeder/ConvoContentBuddy.Data.Seeder"
+WORKDIR "/src/ConvoContentBuddy.Data.Seeder"
 RUN dotnet build "ConvoContentBuddy.Data.Seeder.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish

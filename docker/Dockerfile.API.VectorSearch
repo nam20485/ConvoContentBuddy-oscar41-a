@@ -9,9 +9,9 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY src/ ./
-RUN dotnet restore "ConvoContentBuddy.API.VectorSearch/ConvoContentBuddy.API.VectorSearch/ConvoContentBuddy.API.VectorSearch.csproj"
+RUN dotnet restore "ConvoContentBuddy.API.VectorSearch/ConvoContentBuddy.API.VectorSearch.csproj"
 
-WORKDIR "/src/ConvoContentBuddy.API.VectorSearch/ConvoContentBuddy.API.VectorSearch"
+WORKDIR "/src/ConvoContentBuddy.API.VectorSearch"
 RUN dotnet build "ConvoContentBuddy.API.VectorSearch.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
